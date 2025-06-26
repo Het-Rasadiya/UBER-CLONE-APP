@@ -373,3 +373,162 @@ Registers a new captain with vehicle information. Validates input, hashes the pa
 - The password is hashed before storage.
 - The email must be unique.
 - A JWT token is generated upon successful registration.
+
+---
+
+## 2. Captain Login
+
+### Endpoint
+`POST /captains/login`
+
+### Description
+Allows a captain to log in using their email and password. Returns a JWT token and captain details if credentials are valid.
+
+### Request Body
+```json
+{
+  "email": "string (valid email, required)",
+  "password": "string (min 6 characters, required)"
+}
+```
+
+#### Example Request Body
+```json
+{
+  "email": "jane.smith@example.com",
+  "password": "securepassword"
+}
+```
+
+### Response
+#### Success Response
+- **Status Code:** `200 OK`
+- **Response Body:**
+```json
+{
+  "token": "string (JWT token)",
+  "captain": {
+    "_id": "string",
+    "fullname": {
+      "firstname": "string",
+      "lastname": "string"
+    },
+    "email": "string",
+    "vehicle": {
+      "color": "string",
+      "plate": "string",
+      "capacity": 4,
+      "vehicleType": "car"
+    },
+    "status": "active|inactive"
+  }
+}
+```
+
+#### Error Responses
+1. **Validation Error**
+   - **Status Code:** `400 Bad Request`
+   - **Response Body:**
+     ```json
+     {
+       "errors": [
+         {
+           "msg": "string (error message)",
+           "param": "string (field name)",
+           "location": "string (body)"
+         }
+       ]
+     }
+     ```
+2. **Invalid Credentials**
+   - **Status Code:** `404 Not Found` or `401 Unauthorized`
+   - **Response Body:**
+     ```json
+     {
+       "message": "Invalid email or password"
+     }
+     ```
+     or
+     ```json
+     {
+       "message": "Invalid password or email"
+     }
+     ```
+
+---
+
+## 3. Captain Profile
+
+### Endpoint
+`GET /captains/profile`
+
+### Description
+Returns the profile information of the currently authenticated captain. Requires a valid JWT token in the cookie or Authorization header.
+
+### Headers
+- `Authorization: Bearer <token>` (if not using cookies)
+
+### Response
+#### Success Response
+- **Status Code:** `200 OK`
+- **Response Body:**
+```json
+{
+  "captain": {
+    "_id": "string",
+    "fullname": {
+      "firstname": "string",
+      "lastname": "string"
+    },
+    "email": "string",
+    "vehicle": {
+      "color": "string",
+      "plate": "string",
+      "capacity": 4,
+      "vehicleType": "car"
+    },
+    "status": "active|inactive"
+  }
+}
+```
+
+#### Error Responses
+- **Status Code:** `401 Unauthorized` (if not authenticated)
+- **Response Body:**
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
+
+---
+
+## 4. Captain Logout
+
+### Endpoint
+`GET /captains/logout`
+
+### Description
+Logs out the currently authenticated captain by clearing the authentication token cookie and blacklisting the token. Requires a valid JWT token in the cookie or Authorization header.
+
+### Headers
+- `Authorization: Bearer <token>` (if not using cookies)
+
+### Response
+#### Success Response
+- **Status Code:** `200 OK`
+- **Response Body:**
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+#### Error Responses
+- **Status Code:** `401 Unauthorized` (if not authenticated)
+- **Response Body:**
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
