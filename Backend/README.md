@@ -194,3 +194,80 @@ The request body should be a JSON object with the following structure:
 ## Notes
 - The password is not returned in the response.
 - A JWT token is generated upon successful login.
+
+---
+
+# API Documentation: /users/profile
+
+## Endpoint
+
+`GET /users/profile`
+
+## Description
+This endpoint returns the profile information of the currently authenticated user. The request must include a valid JWT token in the cookie or Authorization header.
+
+## Headers
+- `Authorization: Bearer <token>` (if not using cookies)
+
+## Response
+
+### Success Response
+**Status Code:** `200 OK`
+
+**Response Body:**
+```json
+{
+  "user": {
+    "_id": "string",
+    "fullname": {
+      "firstname": "string",
+      "lastname": "string"
+    },
+    "email": "string"
+  }
+}
+```
+
+### Error Responses
+- **Status Code:** `401 Unauthorized` (if not authenticated)
+- **Response Body:**
+  ```json
+  {
+    "message": "Authentication required"
+  }
+  ```
+
+---
+
+# API Documentation: /users/logout
+
+## Endpoint
+
+`GET /users/logout`
+
+## Description
+This endpoint logs out the currently authenticated user by clearing the authentication token cookie and blacklisting the token. The request must include a valid JWT token in the cookie or Authorization header.
+
+## Headers
+- `Authorization: Bearer <token>` (if not using cookies)
+
+## Response
+
+### Success Response
+**Status Code:** `200 OK`
+
+**Response Body:**
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+### Error Responses
+- **Status Code:** `401 Unauthorized` (if not authenticated)
+- **Response Body:**
+  ```json
+  {
+    "message": "Authentication required"
+  }
+  ```
