@@ -271,3 +271,105 @@ This endpoint logs out the currently authenticated user by clearing the authenti
     "message": "Authentication required"
   }
   ```
+
+---
+
+# API Documentation: Captain Endpoints
+
+## 1. Register Captain
+
+### Endpoint
+`POST /captains/register`
+
+### Description
+Registers a new captain with vehicle information. Validates input, hashes the password, and creates a new captain in the database. Returns a JWT token and captain details on success.
+
+### Request Body
+```json
+{
+  "fullname": {
+    "firstname": "string (min 3 characters, required)",
+    "lastname": "string (min 3 characters, optional)"
+  },
+  "email": "string (valid email, required)",
+  "password": "string (min 6 characters, required)",
+  "vehicle": {
+    "color": "string (min 3 characters, required)",
+    "plate": "string (min 3 characters, required)",
+    "capacity": "number (min 1, required)",
+    "vehicleType": "string (car|motorcycle|auto, required)"
+  }
+}
+```
+
+#### Example Request Body
+```json
+{
+  "fullname": {
+    "firstname": "Jane",
+    "lastname": "Smith"
+  },
+  "email": "jane.smith@example.com",
+  "password": "securepassword",
+  "vehicle": {
+    "color": "Red",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+### Response
+#### Success Response
+- **Status Code:** `201 Created`
+- **Response Body:**
+```json
+{
+  "token": "string (JWT token)",
+  "captain": {
+    "_id": "string",
+    "fullname": {
+      "firstname": "string",
+      "lastname": "string"
+    },
+    "email": "string",
+    "vehicle": {
+      "color": "string",
+      "plate": "string",
+      "capacity": 4,
+      "vehicleType": "car"
+    },
+    "status": "active|inactive"
+  }
+}
+```
+
+#### Error Responses
+1. **Validation Error**
+   - **Status Code:** `400 Bad Request`
+   - **Response Body:**
+     ```json
+     {
+       "errors": [
+         {
+           "msg": "string (error message)",
+           "param": "string (field name)",
+           "location": "string (body)"
+         }
+       ]
+     }
+     ```
+2. **Duplicate Email**
+   - **Status Code:** `400 Bad Request`
+   - **Response Body:**
+     ```json
+     {
+       "message": "Captain with this email already exists"
+     }
+     ```
+
+### Notes
+- The password is hashed before storage.
+- The email must be unique.
+- A JWT token is generated upon successful registration.

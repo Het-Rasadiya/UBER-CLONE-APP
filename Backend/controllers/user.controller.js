@@ -9,6 +9,12 @@ module.exports.registerUser = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
     const { fullname, email, password } = req.body;
+    const isUserAlreadyExists = await userModel.findOne({ email });
+    if (isUserAlreadyExists) {
+        return res.status(400).json({
+            message: 'User with this email already exists'
+        });
+    }
     const hashedPassword = await userModel.hashPassword(password);
     const user = await userService.createUser({
         firstname: fullname.firstname,
@@ -29,6 +35,7 @@ module.exports.loginUser = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
     const { email, password } = req.body;
+
     const user = await userModel.findOne({ email }).select('+password');
     if (!user) {
         return res.status(404).json({ message: 'Invalid email or Password' });
