@@ -1,3 +1,16 @@
+
+## How to Start the Backend Server
+
+To start the backend development server, run:
+
+```bash
+cd Backend
+npx nodemon
+```
+
+This will start the backend server with automatic restarts on file changes. Make sure you have `nodemon` installed (it is usually a dev dependency).
+
+
 # API Documentation: /users/register
 
 ## Endpoint
